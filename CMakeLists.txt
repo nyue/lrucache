@@ -6,7 +6,12 @@ PROJECT ( LRUCache )
 
 FIND_PACKAGE ( OpenMP )
 
-ADD_DEFINITIONS ( -std=c++0x )
+IF ( NOT APPLE )
+  ADD_DEFINITIONS ( -std=c++0x )
+ELSE ()
+  FIND_PACKAGE ( Boost COMPONENTS thread system )
+  INCLUDE_DIRECTORIES ( ${Boost_INCLUDE_DIR} )
+ENDIF ()
 
 ADD_EXECUTABLE ( LRUCacheTest
   LRUCacheTest.cpp
@@ -17,6 +22,7 @@ ADD_EXECUTABLE ( LRUCacheThreadingTest
 )
 
 TARGET_LINK_LIBRARIES ( LRUCacheThreadingTest
+  ${Boost_LIBRARIES}
   gomp
   )
 

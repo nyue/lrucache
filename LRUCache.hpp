@@ -28,7 +28,13 @@
 #include <map>
 #include <iostream>
 #include <exception>
+#ifdef LRUCACHE_REENTRANT
+#ifdef __APPLE__
+#include <boost/thread/mutex.hpp>
+#else
 #include <mutex>
+#endif __APPLE__
+#endif // LRUCACHE_REENTRANT
 
 namespace lru
 {
@@ -141,7 +147,11 @@ namespace lru
 		void insert(const Key& key, const Value& value)		
 		{
 #ifdef LRUCACHE_REENTRANT
+#ifdef __APPLE__
+            boost::mutex::scoped_lock scoped_lock(m_mutex);
+#else
 			std::lock_guard<std::mutex> lock(m_mutex);
+#endif // __APPLE__
 #endif // LRUCACHE_REENTRANT
 			typename MapType::iterator iter = m_cache.find(key);
 			if(iter != m_cache.end())
@@ -163,7 +173,11 @@ namespace lru
 		const Value& get(const Key& key)
 		{
 #ifdef LRUCACHE_REENTRANT
+#ifdef __APPLE__
+            boost::mutex::scoped_lock scoped_lock(m_mutex);
+#else
 			std::lock_guard<std::mutex> lock(m_mutex);
+#endif // __APPLE__
 #endif // LRUCACHE_REENTRANT
 			//std::cout<<"get("<<key<<")"<<std::endl;
 			typename MapType::iterator iter = m_cache.find(key);
@@ -179,7 +193,11 @@ namespace lru
 		void remove(const Key& key)
 		{
 #ifdef LRUCACHE_REENTRANT
+#ifdef __APPLE__
+            boost::mutex::scoped_lock scoped_lock(m_mutex);
+#else
 			std::lock_guard<std::mutex> lock(m_mutex);
+#endif // __APPLE__
 #endif // LRUCACHE_REENTRANT
 			typename MapType::iterator iter = m_cache.find(key);
 			if(iter != m_cache.end())
@@ -233,7 +251,11 @@ namespace lru
 		size_t m_maxSize;
 		size_t m_elasticity;
 #ifdef LRUCACHE_REENTRANT
+#ifdef __APPLE__
+        boost::mutex m_mutex;
+#else
         std::mutex m_mutex;
+#endif // __APPLE__
 #endif // LRUCACHE_REENTRANT
 	private:
 		Cache(const Cache&);

@@ -31,14 +31,20 @@ namespace lru
 		lru::Cache<String, String> cache(3,0);
 		cache.insert("hello", "world");
 		cache.insert("foo", "bar");
+#ifndef __APPLE__
 		cache.dumpDebug(std::cout<<"--> After 2 inserts"<<std::endl);
+#endif // __APPLE__
 		
 		std::cout<<"checking refresh : "<<cache.get("hello")<<std::endl;
+#ifndef __APPLE__
 		cache.dumpDebug(std::cout<<"--> After refeshing oldest key"<<std::endl);
+#endif // __APPLE__
 		
 		cache.insert("hello1", "world1");
 		cache.insert("foo1", "bar1");
+#ifndef __APPLE__
 		cache.dumpDebug(std::cout<<"--> After adding two more"<<std::endl);
+#endif // __APPLE__
 	}
 }
 

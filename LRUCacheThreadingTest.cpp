@@ -30,7 +30,7 @@
 int main(int argc, char **argv)
 {
 	int nthreads, tid;
-	const size_t numElements = 1024*1024;
+	const size_t numElements = 1024*1024*8;
 	const size_t cacheSize   = 1024;
 	lru::Cache<int,int> cache(cacheSize,0);
     
