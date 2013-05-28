@@ -33,7 +33,7 @@
 #include <boost/thread/mutex.hpp>
 #else
 #include <mutex>
-#endif __APPLE__
+#endif // __APPLE__
 #endif // LRUCACHE_REENTRANT
 
 namespace lru
