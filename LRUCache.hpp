@@ -28,6 +28,7 @@
 #include <map>
 #include <iostream>
 #include <exception>
+#include <mutex>
 
 namespace lru
 {
@@ -139,6 +140,9 @@ namespace lru
 		void clear(){ m_cache.clear(); m_keys.clear(); }
 		void insert(const Key& key, const Value& value)		
 		{
+#ifdef LRUCACHE_REENTRANT
+			std::lock_guard<std::mutex> lock(m_mutex);
+#endif // LRUCACHE_REENTRANT
 			typename MapType::iterator iter = m_cache.find(key);
 			if(iter != m_cache.end())
 			{
@@ -158,6 +162,9 @@ namespace lru
 
 		const Value& get(const Key& key)
 		{
+#ifdef LRUCACHE_REENTRANT
+			std::lock_guard<std::mutex> lock(m_mutex);
+#endif // LRUCACHE_REENTRANT
 			//std::cout<<"get("<<key<<")"<<std::endl;
 			typename MapType::iterator iter = m_cache.find(key);
 			if(iter == m_cache.end())
@@ -171,6 +178,9 @@ namespace lru
 		}
 		void remove(const Key& key)
 		{
+#ifdef LRUCACHE_REENTRANT
+			std::lock_guard<std::mutex> lock(m_mutex);
+#endif // LRUCACHE_REENTRANT
 			typename MapType::iterator iter = m_cache.find(key);
 			if(iter != m_cache.end())
 			{
@@ -222,6 +232,9 @@ namespace lru
 		List<Key, Value> m_keys;
 		size_t m_maxSize;
 		size_t m_elasticity;
+#ifdef LRUCACHE_REENTRANT
+        std::mutex m_mutex;
+#endif // LRUCACHE_REENTRANT
 	private:
 		Cache(const Cache&);
 		const Cache& operator = (const Cache&);
