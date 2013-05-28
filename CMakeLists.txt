@@ -1,0 +1,13 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+
+PROJECT ( LRUCache )
+
+ADD_EXECUTABLE ( LRUCacheTest
+  LRUCacheTest.cpp
+)
+
+INSTALL ( FILES
+  LRUCache.hpp
+  DESTINATION
+  include
+  )
